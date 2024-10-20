@@ -75,14 +75,7 @@ int entry(int argc, char **argv) {
 		u32 anim_sheet_pos_x = anim_index_x * anim_frame_width;
 		u32 anim_sheet_pos_y = (number_of_rows - anim_index_y) * anim_frame_height; // Remember, Y inverted.
 		
-		// Draw the sprite sheet, with the uv box for the current frame.
-		// Uv box is a Vector4 of x1, y1, x2, y2 where each value is a percentage value 0.0 to 1.0
-		// from left to right / bottom to top in the texture.
-		Draw_Quad *quad = draw_image(anim_sheet, v2(0, 0), v2(anim_frame_width*4, anim_frame_height*4), COLOR_WHITE);
-		quad->uv.x1 = (float32)(anim_sheet_pos_x)/(float32)anim_sheet->width;
-		quad->uv.y1 = (float32)(anim_sheet_pos_y)/(float32)anim_sheet->height;
-		quad->uv.x2 = (float32)(anim_sheet_pos_x+anim_frame_width) /(float32)anim_sheet->width;
-		quad->uv.y2 = (float32)(anim_sheet_pos_y+anim_frame_height)/(float32)anim_sheet->height;
+	
 		
 		
 		// Visualize sprite sheet animation
