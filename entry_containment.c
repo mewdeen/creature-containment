@@ -42,10 +42,17 @@ int entry(int argc, char **argv) {
 	
 	float32 anim_start_time = os_get_elapsed_seconds();
 	
+	Vector2 player_pos = v2(0,0);
+	float player_speed = 200.0f; // pixels per second
+
 	float64 last_time = os_get_elapsed_seconds();
 	while (!window.should_close) {
 		reset_temporary_storage();
 		
+
+		if (is_key_just_pressed(KEY_ESCAPE)){
+			window.should_close = true;
+		}
 		
 		float64 now = os_get_elapsed_seconds();
 		float64 delta = now-last_time;
@@ -87,7 +94,36 @@ int entry(int argc, char **argv) {
 		draw_rect(v2_add(sheet_pos, frame_pos_in_sheet), frame_size, COLOR_WHITE); // Draw white rect on current frame
 		draw_image(anim_sheet, sheet_pos, sheet_size, COLOR_WHITE); // Draw the seet
 		
-		os_update(); 
+			Vector2 input_axis = v2(0, 0);
+		if (is_key_down('A')) {
+			input_axis.x -= 1.0;
+		}
+		if (is_key_down('D')) {
+			input_axis.x += 1.0;
+		}
+		if (is_key_down('S')) {
+			input_axis.y -= 1.0;
+		}
+		if (is_key_down('W')) {
+			input_axis.y += 1.0;
+		}
+
+		if (v2_length(input_axis) > 0) {
+			input_axis = v2_normalize(input_axis);
+		}
+
+		// update player position
+		Vector2 movement = v2_mulf(input_axis, player_speed * delta);
+		player_pos = v2_add(player_pos, movement);
+
+		 // Draw the player at the updated position
+        Draw_Quad *player_quad = draw_image(anim_sheet, player_pos, v2(anim_frame_width*4, anim_frame_height*4), COLOR_WHITE);
+        player_quad->uv.x1 = (float32)(anim_sheet_pos_x)/(float32)anim_sheet->width;
+        player_quad->uv.y1 = (float32)(anim_sheet_pos_y)/(float32)anim_sheet->height;
+        player_quad->uv.x2 = (float32)(anim_sheet_pos_x+anim_frame_width) /(float32)anim_sheet->width;
+        player_quad->uv.y2 = (float32)(anim_sheet_pos_y+anim_frame_height)/(float32)anim_sheet->height;
+
+		os_update();
 		gfx_update();
 	}
 
